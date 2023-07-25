@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	instrumentationName = "agoda/otelzap"
+	instrumentationName = "github.com/agoda-com/otelzap"
 )
 
 // This class provide interface for OTLP logger
