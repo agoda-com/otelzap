@@ -45,34 +45,30 @@ var instrumentationScope = instrumentation.Scope{
 func (otlpCore) Enabled(zapcore.Level) bool {
 	return true
 }
-func (c otlpCore) With(f []zapcore.Field) zapcore.Core {
 
+func (c *otlpCore) With(f []zapcore.Field) zapcore.Core {
 	fields := c.fields
+	fields = append(fields, f...)
 
-	for _, fld := range f {
-		fields = append(fields, fld)
-	}
-
-	return otlpCore{
+	return &otlpCore{
 		logger: c.logger,
 		fields: fields,
 	}
 }
 
 // Check OTLP zap extension method to check if logger is enabled
-func (c otlpCore) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcore.CheckedEntry {
+func (c *otlpCore) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcore.CheckedEntry {
 	if c.Enabled(entry.Level) {
 		return checked.AddCore(entry, c)
 	}
 	return checked
 }
 
-func (c otlpCore) Sync() error {
+func (c *otlpCore) Sync() error {
 	return nil
 }
 
-func (c otlpCore) Write(ent zapcore.Entry, fields []zapcore.Field) error {
-
+func (c *otlpCore) Write(ent zapcore.Entry, fields []zapcore.Field) error {
 	var attributes []attribute.KeyValue
 	var spanCtx *trace.SpanContext
 
@@ -133,8 +129,6 @@ func (c otlpCore) Write(ent zapcore.Entry, fields []zapcore.Field) error {
 	}
 
 	r := otel.NewLogRecord(lrc)
-
 	c.logger.Emit(r)
-
 	return nil
 }
