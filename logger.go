@@ -18,6 +18,7 @@ package otelzap
 
 import (
 	"context"
+
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -29,10 +30,6 @@ type Logger struct {
 }
 
 const contextKey = "context"
-
-type SugaredLogger struct {
-	*zap.SugaredLogger
-}
 
 func (l *Logger) Sugar() *SugaredLogger {
 	return &SugaredLogger{
@@ -48,6 +45,16 @@ func (l *Logger) Ctx(ctx context.Context) *Logger {
 	return l
 }
 
+func (l *Logger) With(fields ...zapcore.Field) *Logger {
+	return &Logger{
+		Logger: l.Logger.With(fields...),
+	}
+}
+
+type SugaredLogger struct {
+	*zap.SugaredLogger
+}
+
 func (l *SugaredLogger) Ctx(ctx context.Context) *SugaredLogger {
 	span := trace.SpanFromContext(ctx)
 	if span.SpanContext().IsValid() {
@@ -57,11 +64,5 @@ func (l *SugaredLogger) Ctx(ctx context.Context) *SugaredLogger {
 	}
 	return &SugaredLogger{
 		SugaredLogger: l.SugaredLogger,
-	}
-}
-
-func (l *Logger) With(fields ...zapcore.Field) *Logger {
-	return &Logger{
-		Logger: l.Logger.With(fields...),
 	}
 }
