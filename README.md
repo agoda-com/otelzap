@@ -4,7 +4,8 @@ Zap logger with OpenTelemetry support. This logger will export LogRecord's in OT
 
 ## Quick start
 
-Export `OTEL_EXPORTER_OTLP_ENDPOINT=https://localhost:4317` env variable to your OTLP collector
+[Export env variable](https://opentelemetry.io/docs/concepts/sdk-configuration/otlp-exporter-configuration/#otel_exporter_otlp_endpoint)  `OTEL_EXPORTER_OTLP_ENDPOINT=https://localhost:4318`
+to your OTLP collector
 
 ```go
 package main
@@ -41,6 +42,9 @@ func main() {
 		sdk.WithBatcher(logExporter),
 		sdk.WithResource(newResource()),
 	)
+	// gracefully shutdown logger to flush accumulated signals before program finish
+	defer loggerProvider.Shutdown(ctx)
+
 	// set opentelemetry logger provider globally 
 	otellogs.SetLoggerProvider(loggerProvider)
 
@@ -65,4 +69,5 @@ func doSomething() {
 	// send log with opentelemetry context
 	otelzap.Ctx(spanCtx).Info("My message with trace context")
 }
+
 ```
