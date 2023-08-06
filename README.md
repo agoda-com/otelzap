@@ -15,20 +15,24 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
+	semconv2 "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"go.uber.org/zap"
 	"github.com/agoda-com/otelzap"
 	otellogs "github.com/agoda-com/opentelemetry-logs-go"
 	sdk "github.com/agoda-com/opentelemetry-logs-go/sdk/logs"
 	"github.com/agoda-com/opentelemetry-logs-go/exporters/otlp/otlplogs"
 	"github.com/agoda-com/opentelemetry-logs-go/exporters/otlp/otlplogs/otlplogshttp"
+	"os"
 )
 
 // configure common attributes for all logs 
 func newResource() *resource.Resource {
+	hostName, _ := os.Hostname()
 	return resource.NewWithAttributes(
 		semconv.SchemaURL,
 		semconv.ServiceName("otelzap-example"),
-		semconv.ServiceVersion("0.0.1"),
+		semconv.ServiceVersion("1.0.0"),
+		semconv.HostName(hostName),
 	)
 }
 
@@ -37,7 +41,7 @@ func main() {
 	ctx := context.Background()
 
 	// configure opentelemetry logger provider
-	logExporter, _ := otlplogs.New(ctx, otlplogshttp.NewClient())
+	logExporter, _ := otlplogs.NewExporter(ctx)
 	loggerProvider := sdk.NewLoggerProvider(
 		sdk.WithBatcher(logExporter),
 		sdk.WithResource(newResource()),
