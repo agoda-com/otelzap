@@ -3,7 +3,7 @@ module github.com/agoda-com/otelzap
 go 1.20
 
 require (
-	github.com/agoda-com/opentelemetry-logs-go v0.0.1
+	github.com/agoda-com/opentelemetry-logs-go v0.1.2
 	go.opentelemetry.io/otel v1.16.0
 	go.opentelemetry.io/otel/sdk v1.16.0
 	go.opentelemetry.io/otel/trace v1.16.0
