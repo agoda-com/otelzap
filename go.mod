@@ -1,3 +1,4 @@
+// Deprecated: Use the "github.com/agoda-com/opentelemetry-go/otelzap" module instead.
 module github.com/agoda-com/otelzap
 
 go 1.20
