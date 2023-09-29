@@ -1,3 +1,7 @@
+# Deprecation note
+
+Current project moved to anoter space to centralize opentelemetry loggers. Please use https://github.com/agoda-com/opentelemetry-go/tree/main/otelzap instead
+
 # otelzap
 
 Zap logger with OpenTelemetry support. This logger will export LogRecord's in OTLP format.
